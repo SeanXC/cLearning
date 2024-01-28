@@ -39,51 +39,61 @@ char* morse_table[] = {morse_a, morse_b, morse_c, morse_d,
                        morse_s, morse_t, morse_u, morse_v, morse_w, morse_x, morse_y,
                        morse_z};
 
-void morse_encode(char * input, char * output, char ** morse_table) {
-    int out_index =0;
-    for(int i = 0; input[i]!= '\0'; i++)
+// Function to encode a string of text into Morse code
+void morse_encode(char *input, char *output, char **morse_table)
+{
+    int out_index = 0;
+    for (int i = 0; input[i] != '\0'; i++)
     {
-        if(input[i] == ' ')
+        if (input[i] == ' ')
         {
-            output[out_index++] = '_';
-            output[out_index++] = ' ';
+            output[out_index++] = '_';  // Encode space as underscore in Morse code
+            output[out_index++] = ' ';  // Add a space after the underscore
         }
-
-            int letter_index = input[i] - 'A';
-            strcpy(&output[out_index], morse_table[letter_index]);
-            out_index += strlen(morse_table[letter_index]);
-            output[out_index++] = ' ';
+        else if (input[i] >= 'A' && input[i] <= 'Z')
+        {
+            int letter_index = input[i] - 'A';  // Calculate the index in the Morse code table
+            strcpy(&output[out_index], morse_table[letter_index]);  // Copy Morse code for the letter
+            out_index += strlen(morse_table[letter_index]);  // Move the output index
+            output[out_index++] = ' ';  // Add a space after the Morse code for letter separation
+        }
     }
+    output[out_index] = '\0';  // Null-terminate the output string
 }
 
-void morse_decode(char * input, char * output, char ** morse_table) {
-    int input_index = 0;
-    int output_index = 0;
+// Function to decode a string of Morse code back into text
+void morse_decode(char *input, char *output, char **morse_table)
+{
+    int input_index = 0, output_index = 0;
     while (input[input_index] != '\0')
     {
         if (input[input_index] == '_')
         {
-            output[output_index++] = ' ';
-            input_index += 2; //skip the first 2 empty input
+            output[output_index++] = ' ';  // Decode underscore back to space
+            input_index += 2;  // Skip the underscore and the following space
         }
         else
         {
-            char morse_char[10];
+            char morse_char[10];  // Temporary storage for the Morse code of one character
             int morse_index = 0;
+            // Collect Morse code for one character
             while (input[input_index] != ' ' && input[input_index] != '\0')
             {
                 morse_char[morse_index++] = input[input_index++];
             }
-            if (input[input_index] == ' ') input_index++;
-            for (int i = 0; i < strlen(input); i++)
+            morse_char[morse_index] = '\0';  // Null-terminate the Morse code string
+            if (input[input_index] == ' ') input_index++;  // Move past the space after Morse code
+            // Find the letter corresponding to the Morse code
+            for (int i = 0; i < letter_count; i++)
             {
                 if (strcmp(morse_char, morse_table[i]) == 0)
                 {
-                    output[output_index++] = 'A' + i;
+                    output[output_index++] = 'A' + i;  // Decode Morse code to letter
                     break;
                 }
             }
         }
     }
+    output[output_index] = '\0';  // Null-terminate the output string
 }
 
